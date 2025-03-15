@@ -163,7 +163,7 @@ mongoose
       }
     });
 
-    app.get("/parts/:id", async (req, res) => {
+    app.get("/retrieveById/:id", async (req, res) => {
       try {
         const part = await ComputerPart.findById(req.params.id);
         if (!part) {

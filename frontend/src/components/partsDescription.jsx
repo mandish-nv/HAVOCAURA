@@ -12,7 +12,7 @@ export default function DisplayPart() {
   useEffect(() => {
     const fetchPartInfo = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/parts/${id}`);
+        const response = await axios.get(`http://localhost:5000/retrieveById/${id}`);
         setPart(response.data);
       } catch (error) {
         setError(error.response?.data?.message || "Failed to fetch data");
