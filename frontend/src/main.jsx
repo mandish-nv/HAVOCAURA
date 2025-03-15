@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 
-import './index.css'
+import './styles/index.css'
 import Navbar from './navbar'
 import LandingDiv from './landingDiv'
 // import ComputerPartForm from './partsDataEntry'
@@ -11,6 +11,7 @@ import LandingDiv from './landingDiv'
 // import LogoutButton from './logout'
 // import LaptopList from './storeLaptops'
 // import PartsList from './storeParts'
+// import DisplayPart from './components/partsDescription' //routing needed
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -24,5 +25,7 @@ createRoot(document.getElementById('root')).render(
 
     {/* <LaptopList/>
     <PartsList/> */}
+    
+    {/* <DisplayPart/> */}
   </StrictMode>,
 )

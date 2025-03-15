@@ -1,4 +1,4 @@
-import ComputerParts from "./computerParts";
+import ComputerParts from "./components/computerParts";
 import "./styles/computerParts.css";
 
 export default function PartsList() {

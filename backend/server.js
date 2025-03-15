@@ -163,6 +163,18 @@ mongoose
       }
     });
 
+    app.get("/parts/:id", async (req, res) => {
+      try {
+        const part = await ComputerPart.findById(req.params.id);
+        if (!part) {
+          return res.status(404).send("Part not found");
+        }
+        res.json(part);
+      } catch (error) {
+        res.status(500).send("Error fetching part details");
+      }
+    });
+
     app.listen(port, () => {
       console.log("Server Connected");
     });
