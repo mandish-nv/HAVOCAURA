@@ -28,7 +28,7 @@ const laptopSchema = new mongoose.Schema({
     default: "Integrated",
   },
   screenSize: {
-    type: Number, // in inches
+    type: String, // in inches
     required: true,
   },
   operatingSystem: {

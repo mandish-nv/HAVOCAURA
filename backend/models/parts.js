@@ -39,8 +39,7 @@ const computerPartSchema = new mongoose.Schema(
       min: 0,
     },
     specifications: {
-      type: Object, // This allows flexibility for different types of parts
-      default: {},
+      type: String, // This allows flexibility for different types of parts
     },
     description: {
       type: String,

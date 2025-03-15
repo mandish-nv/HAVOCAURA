@@ -77,6 +77,7 @@ export default function ComputerPartForm() {
           onChange={handleChange}
           required
         />
+        <br/>
 
         <label>Category:</label>
         <select
@@ -92,6 +93,7 @@ export default function ComputerPartForm() {
             </option>
           ))}
         </select>
+        <br/>
 
         <label>Brand:</label>
         <input
@@ -101,6 +103,7 @@ export default function ComputerPartForm() {
           onChange={handleChange}
           required
         />
+        <br/>
 
         <label>Model:</label>
         <input
@@ -110,6 +113,7 @@ export default function ComputerPartForm() {
           onChange={handleChange}
           required
         />
+        <br/>
 
         <label>Price ($):</label>
         <input
@@ -119,14 +123,15 @@ export default function ComputerPartForm() {
           onChange={handleChange}
           required
         />
+        <br/>
 
-        <label>Specifications (JSON format):</label>
+        <label>Specifications:</label>
         <textarea
           name="specifications"
           value={formData.specifications}
           onChange={handleChange}
-          placeholder='{"cores": 8, "threads": 16, "clockSpeed": "3.6GHz"}'
         ></textarea>
+        <br/>
 
         <label>Description:</label>
         <textarea
@@ -134,14 +139,16 @@ export default function ComputerPartForm() {
           value={formData.description}
           onChange={handleChange}
         ></textarea>
+        <br/>
 
         <label>Image:</label>
         <input
-          type="image"
+          type="file"
           name="image"
           value={formData.image}
           onChange={handleChange}
         />
+        <br/>
 
         <button type="submit">Add Part</button>
       </form>

@@ -29,9 +29,19 @@ mongoose
       try {
         const newPart = new ComputerPart(req.body);
         await newPart.save();
-        res.status(200).json(newPart);
+        res.status(201).json(newPart);
       } catch (error) {
         res.status(500).json({ message: "Error saving part", error });
+      }
+    });
+
+    app.post("/api/laptops", async (req, res) => {
+      try {
+        const newLaptop = new Laptop(req.body);
+        await newLaptop.save();
+        res.status(201).send("Laptop added successfully");
+      } catch (err) {
+        res.status(500).send("Error: " + err.message);
       }
     });
 
