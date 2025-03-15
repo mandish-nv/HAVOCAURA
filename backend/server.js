@@ -5,8 +5,9 @@ const User = require("./models/user");
 const ComputerPart = require("./models/parts");
 const Laptop = require("./models/laptop");
 const bodyParser = require("body-parser");
-// const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
+const session = require("express-session");
 dotenv.config();
 const port = 5000;
 
@@ -17,6 +18,16 @@ app.use(bodyParser.urlencoded({ extended: true, limit: "10mb" }));
 const URL = "mongodb://localhost:27017/HAVOCAURA";
 app.use(express.json());
 app.use(cors());
+
+// Session configuration
+app.use(
+  session({
+    secret: "havocaura-secret-key",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false, httpOnly: true, maxAge: 24 * 60 * 60 * 1000 }, // 24 hours
+  })
+);
 
 mongoose
   .connect(URL)
@@ -45,75 +56,86 @@ mongoose
       }
     });
 
-    // app.post("/register", async (req, res) => {
-    //   try {
-    //     const saltRounds = 10;
+    app.post("/register", async (req, res) => {
+      try {
+        const {
+          fullName,
+          userName,
+          gender,
+          dob,
+          email,
+          password,
+          profilePicture,
+        } = req.body;
 
-    //     // const user = new User(req.body);
+        // Check if user already exists
+        const existingUser = await User.findOne({
+          $or: [{ userName }, { email }],
+        });
 
-    //     //validation logic
-    //     const fullName = req.body.fullName;
-    //     const userName = req.body.userName;
-    //     const gender = req.body.gender;
-    //     const dob = req.body.dob;
-    //     const email = req.body.email;
-    //     const password = await bcrypt.hash(req.body.password, saltRounds);
-    //     const profilePicture = req.body.profilePicture;
-    //     const user = new User({
-    //       fullName: fullName,
-    //       userName: userName,
-    //       gender: gender,
-    //       dob: dob,
-    //       email: email,
-    //       password: password,
-    //       profilePicture: profilePicture,
-    //     });
+        if (existingUser) {
+          return res
+            .status(400)
+            .send(
+              existingUser.email === email
+                ? "Email already exists"
+                : "Username already exists"
+            );
+        }
 
-    //     const userNameSearch = await User.findOne({ userName }); //returns whole object
-    //     const emailSearch = await User.findOne({ email });
+        // Hash password
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-    //     if (userNameSearch && emailSearch) {
-    //       res.send("3");
-    //     } else if (userNameSearch) {
-    //       res.send("4");
-    //     } else if (emailSearch) {
-    //       res.send("5");
-    //     } else {
-    //       await user.save();
-    //       res.send("6");
-    //     }
-    //   } catch (error) {
-    //     console.error(error);
-    //     res.status(500).send("An error occurred while saving data.");
-    //   }
-    // });
+        // Create new user
+        const newUser = new User({
+          fullName,
+          userName,
+          gender,
+          dob,
+          email,
+          password: hashedPassword,
+          profilePicture,
+        });
 
-    // app.post("/login", async (req, res) => {
-    //   try {
-    //     // const user = new User(req.body);
+        await newUser.save();
+        res.status(201).send("User registered successfully!");
+      } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal server error");
+      }
+    });
 
-    //     //validation logic
-    //     const userName = req.body.userName;
-    //     const password = req.body.password;
+    app.post("/login", async (req, res) => {
+      try {
+        const { identifier, password } = req.body; // Can be email or username
 
-    //     const userNameSearch = await User.findOne({ userName: userName });
-    //     // const passwordMatch = userNameSearch ? userNameSearch.password : "";
-    //     const passwordMatch = userNameSearch
-    //       ? await bcrypt.compare(password, userNameSearch.password)
-    //       : false;
+        const user = await User.findOne({
+          $or: [{ email: identifier }, { userName: identifier }],
+        });
 
-    //     if (!userNameSearch) {
-    //       res.send("1");
-    //     } else if (!passwordMatch) {
-    //       res.send("2");
-    //     } else if (passwordMatch) {
-    //       res.send("7");
-    //     }
-    //   } catch (error) {
-    //     console.error(error);
-    //     res.status(500).send("An error occurred while saving data.");
-    //   }
-    // });
+        if (!user) return res.status(401).send("User not found");
+
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) return res.status(401).send("Invalid password");
+
+        // Store user in session
+        req.session.user = {
+          id: user._id,
+          userName: user.userName,
+          email: user.email,
+        };
+
+        res.status(200).send("Login successful!");
+      } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal server error");
+      }
+    });
+
+    app.get("/logout", (req, res) => {
+      req.session.destroy();
+      res.send("Logged out successfully");
+    });
 
     // app.post("/find", async (req, res) => {
     //   //login pachi userdata tanne
