@@ -175,6 +175,17 @@ mongoose
       }
     });
 
+    app.get("/retrieveByCategory/:category", async (req, res) => {
+      const { category } = req.params;
+      try {
+        const parts = await ComputerPart.find({ category });
+        res.json(parts);
+      } catch (error) {
+        res.status(500).send("Error fetching parts");
+      }
+    });
+    
+
     app.listen(port, () => {
       console.log("Server Connected");
     });

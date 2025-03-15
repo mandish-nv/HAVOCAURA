@@ -12,6 +12,8 @@ import LandingDiv from './landingDiv'
 // import LaptopList from './storeLaptops'
 // import PartsList from './storeParts'
 // import DisplayPart from './components/partsDescription' //routing needed
+// import DisplayLaptop from './components/laptopDescription' //routing needed
+// import BuildAPc from './buildAPc'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -26,6 +28,9 @@ createRoot(document.getElementById('root')).render(
     {/* <LaptopList/>
     <PartsList/> */}
     
-    {/* <DisplayPart/> */}
+    {/* <DisplayPart/> 
+    <DisplayLaptop/>*/}
+
+    {/* <BuildAPc/> */}
   </StrictMode>,
 )
