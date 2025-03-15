@@ -18,6 +18,7 @@ export default function BuildAPc() {
 
   const [parts, setParts] = useState({});
   const [searchQuery, setSearchQuery] = useState({});
+  
   const categories = [
     "CPU",
     "GPU",
@@ -30,9 +31,8 @@ export default function BuildAPc() {
     "Peripherals",
     "Other",
   ];
-
   
-  // Fetch parts by category
+  // ✅ Fetch Parts from Database
   const fetchPartsByCategory = async (category) => {
     try {
       const response = await axios.get(`http://localhost:5000/retrieveByCategory/${category}`);
@@ -45,38 +45,37 @@ export default function BuildAPc() {
   useEffect(() => {
     categories.forEach((cat) => fetchPartsByCategory(cat));
   }, []);
-  
-  // Handle search change
+
+  // ✅ Handle Search Input
   const handleSearch = (category, value) => {
     setSearchQuery((prev) => ({ ...prev, [category]: value }));
   };
   
-  // Handle part selection/deselection
-  const handleSelect = (category, partName) => {
+  // ✅ Handle Part Selection
+  const handleSelect = (category, partId) => {
     setFormData((prev) => {
       if (category === "Other") {
-        const updatedOther = prev.Other.includes(partName)
-        ? prev.Other.filter((item) => item !== partName) // Remove from "Other" if already selected
-        : [...prev.Other, partName]; // Add to "Other" if not selected
+        const updatedOther = prev.Other.includes(partId)
+        ? prev.Other.filter((id) => id !== partId) // Deselect item
+        : [...prev.Other, partId]; // Select item
         return { ...prev, Other: updatedOther };
       }
-
       return {
         ...prev,
-        [category]: prev[category] === partName ? "" : partName, // Deselect if already selected
+        [category]: prev[category] === partId ? "" : partId, // Deselect if already selected
       };
     });
   };
   
   //ADD LATER
-  
+
+  // ✅ Submit Form and Redirect to Checkout Page
   // const navigate = useNavigate();
-  // Handle form submission
   // const handleSubmit = (e) => {
   //   e.preventDefault();
-  //   navigate("/checkout", { state: formData }); // Redirect to Checkout Page with form data
+  //   navigate("/checkout", { state: formData });
   // };
-
+  
   return (
     <div>
       <h1>Build a PC</h1>
@@ -88,11 +87,16 @@ export default function BuildAPc() {
               {cat}:{" "}
               <span>
                 {cat === "Other"
-                  ? formData.Other.join(", ") || "Not selected"
-                  : formData[cat] || "Not selected"}
+                  ? formData.Other.length > 0
+                    ? `${formData.Other.length} item(s) selected`
+                    : "Not selected"
+                  : formData[cat]
+                    ? "Item selected"
+                    : "Not selected"}
               </span>
             </h3>
 
+            {/* 🔎 Search Bar */}
             <input
               type="text"
               placeholder={`Search ${cat}...`}
@@ -100,6 +104,7 @@ export default function BuildAPc() {
               onChange={(e) => handleSearch(cat, e.target.value)}
             />
 
+            {/* ✅ List of Available Parts */}
             <ul>
               {parts[cat]
                 ?.filter((part) =>
@@ -108,16 +113,17 @@ export default function BuildAPc() {
                 .map((part) => (
                   <li
                     key={part._id}
-                    onClick={() => handleSelect(cat, part.name)}
+                    onClick={() => handleSelect(cat, part._id)}
                     style={{
                       cursor: "pointer",
                       backgroundColor:
-                        (formData[cat] === part.name || formData.Other.includes(part.name))
+                        (formData[cat] === part._id || formData.Other.includes(part._id))
                           ? "#d3f9d8"
                           : "",
                     }}
                   >
-                    {part.name}
+                    {part.name+"\t"}
+                    {"$"+part.price}
                   </li>
                 ))}
             </ul>
