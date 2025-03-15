@@ -137,37 +137,31 @@ mongoose
       res.send("Logged out successfully");
     });
 
-    // app.post("/find", async (req, res) => {
-    //   //login pachi userdata tanne
-    //   const userName = req.body.userName;
-    //   const userData = await User.findOne({ userName: userName });
-    //   res.send(userData);
-    // });
+    app.get("/all-laptops", async (req, res) => {
+      try {
+        const laptops = await Laptop.find({}, "brand model image"); // Select only brand, model & image
+        res.json(laptops);
+      } catch (error) {
+        console.error(error);
+        res.status(500).send("Error fetching laptops");
+      }
+    });
 
-    // // user profile display
-    // app.get("/profile/:id", async (req, res) => {
-    //   try {
-    //     const userId = req.params.id; // Use `id` instead of `slug`
-
-    //     // Validate MongoDB ObjectId (to prevent errors)
-    //     if (!mongoose.Types.ObjectId.isValid(userId)) {
-    //       return res.status(400).json({ message: "Invalid user ID format" });
-    //     }
-
-    //     const user = await User.findById(userId); // Use `findById` for efficiency
-
-    //     if (user) {
-    //       res.status(200).json(user);
-    //     } else {
-    //       res.status(404).json({ message: "User not found" });
-    //     }
-    //   } catch (error) {
-    //     console.error("Error retrieving user profile:", error);
-    //     res
-    //       .status(500)
-    //       .json({ message: "An error occurred while retrieving data." });
-    //   }
-    // });
+    app.get("/all-parts", async (req, res) => {
+      try {
+        const category = req.query.category;
+    
+        const query = category && category !== "All" 
+          ? { category } 
+          : {};
+    
+        const parts = await ComputerPart.find(query);
+        res.json(parts);
+      } catch (error) {
+        console.error(error);
+        res.status(500).send("Error fetching parts");
+      }
+    });
 
     app.listen(port, () => {
       console.log("Server Connected");

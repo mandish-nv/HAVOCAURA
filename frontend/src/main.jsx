@@ -9,6 +9,8 @@ import LandingDiv from './landingDiv'
 // import RegisterForm from './registration'
 // import LoginForm from './login'
 // import LogoutButton from './logout'
+// import LaptopList from './storeLaptops'
+// import PartsList from './storeParts'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -19,5 +21,8 @@ createRoot(document.getElementById('root')).render(
     <RegisterForm/> 
     <LoginForm/>
     <LogoutButton/>*/}
+
+    {/* <LaptopList/>
+    <PartsList/> */}
   </StrictMode>,
 )
