@@ -6,47 +6,82 @@ const checkoutSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    laptops: [
+      {
+        part: { type: mongoose.Schema.Types.ObjectId, ref: "Laptop" },
+        price: Number,
+        quantity: { type: Number, default: 0 },
+      },
+    ],
     parts: {
-      CPU: {
-        part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
-        price: Number,
-      },
-      GPU: {
-        part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
-        price: Number,
-      },
-      Motherboard: {
-        part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
-        price: Number,
-      },
-      RAM: {
-        part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
-        price: Number,
-      },
-      Storage: {
-        part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
-        price: Number,
-      },
-      Power_Supply: {
-        part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
-        price: Number,
-      },
-      Cooling_System: {
-        part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
-        price: Number,
-      },
-      Case: {
-        part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
-        price: Number,
-      },
-      Peripherals: {
-        part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
-        price: Number,
-      },
+      CPU: [
+        {
+          part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
+          price: Number,
+          quantity: { type: Number, default: 0 },
+        },
+      ],
+      GPU: [
+        {
+          part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
+          price: Number,
+          quantity: { type: Number, default: 0 },
+        },
+      ],
+      Motherboard: [
+        {
+          part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
+          price: Number,
+          quantity: { type: Number, default: 0 },
+        },
+      ],
+      RAM: [
+        {
+          part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
+          price: Number,
+          quantity: { type: Number, default: 0 },
+        },
+      ],
+      Storage: [
+        {
+          part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
+          price: Number,
+          quantity: { type: Number, default: 0 },
+        },
+      ],
+      Power_Supply: [
+        {
+          part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
+          price: Number,
+          quantity: { type: Number, default: 0 },
+        },
+      ],
+      Cooling_System: [
+        {
+          part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
+          price: Number,
+          quantity: { type: Number, default: 0 },
+        },
+      ],
+      Case: [
+        {
+          part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
+          price: Number,
+          quantity: { type: Number, default: 0 },
+        },
+      ],
+      Peripherals: [
+        {
+          part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
+          price: Number,
+          quantity: { type: Number, default: 0 },
+        },
+      ],
       Other: [
         {
           part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
           price: Number,
+          quantity: { type: Number, default: 0 },
         },
       ],
     },
