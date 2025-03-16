@@ -132,6 +132,14 @@ mongoose
       }
     });
 
+    app.post("/findUser",async(req,res)=>{
+      const data=req.body.identifier
+      const user = await User.findOne({
+        $or: [{ email: data }, { userName: data }],
+      });
+      res.send(user)
+    })
+
     app.get("/logout", (req, res) => {
       req.session.destroy();
       res.send("Logged out successfully");
