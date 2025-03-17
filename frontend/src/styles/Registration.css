@@ -111,3 +111,23 @@
     background-color: rgba(0, 0, 0, 0.9);  
   }
 
+  .success-dropdown {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    z-index: 1000;
+    animation: fadeOut 3s ease-in-out;
+  }
+  
+  @keyframes fadeOut {
+    0% { opacity: 0; }
+    10%{opacity: 0.5;}
+    20%{opacity: 1;}
+    100% { opacity: 0; }
+  }

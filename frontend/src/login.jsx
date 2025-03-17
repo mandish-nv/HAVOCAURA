@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import "./styles/Login.css"; 
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 
 
 export default function LoginForm() {
@@ -9,6 +9,8 @@ export default function LoginForm() {
     identifier: "", // Can be email or username
     password: "",
   });
+  const [showSuccess, setShowSuccess] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,7 +25,11 @@ export default function LoginForm() {
         "http://localhost:5000/login",
         formData
       );
-      alert(response.data); // Login success message
+      // alert(response.data); // Login success message
+      setShowSuccess(true)
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
       const res=await axios.post("http://localhost:5000/findUser",formData)
       sessionStorage.setItem('user',JSON.stringify(res.data))
     } catch (error) {
@@ -38,7 +44,7 @@ export default function LoginForm() {
         <source src="/assets/bg.mp4" type="video/mp4" />
       </video>
 
-      
+      {showSuccess && <div className="success-dropdown">Login Successful! Redirecting...</div>}
       <div className="login-card">
         <h2>Welcome Back</h2>
         <p>Sign in to access the best deals on laptops & PC parts</p>

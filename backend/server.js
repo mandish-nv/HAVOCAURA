@@ -118,13 +118,6 @@ mongoose
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) return res.status(401).send("Invalid password");
 
-        // Store user in session
-        req.session.user = {
-          id: user._id,
-          userName: user.userName,
-          email: user.email,
-        };
-
         res.status(200).send("Login successful!");
       } catch (error) {
         console.error(error);
@@ -139,11 +132,6 @@ mongoose
       });
       res.send(user)
     })
-
-    app.get("/logout", (req, res) => {
-      req.session.destroy();
-      res.send("Logged out successfully");
-    });
 
     app.get("/all-laptops", async (req, res) => {
       try {

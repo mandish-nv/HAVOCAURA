@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import "./styles/Registration.css";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 
 
 export default function RegisterForm() {
@@ -15,6 +15,9 @@ export default function RegisterForm() {
     rePassword: "",
     profilePicture: "",
   });
+  const [showSuccess, setShowSuccess] = useState(false);
+  const navigate = useNavigate();
+  const [message,setMessage]=useState()
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,13 +34,43 @@ export default function RegisterForm() {
 
     try {
       const response = await axios.post("http://localhost:5000/register", formData);
-      alert(response.data); 
+      // alert(response.data); 
       setFormData({ fullName: "", userName: "", gender: "", dob: "", email: "", password: "", rePassword: "", profilePicture: "" });
+      setMessage('Registration Successful! Redirecting...')
+      setShowSuccess(true)
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
     } catch (error) {
-      alert(error.response?.data || "Registration failed");
+      // alert(error.response?.data || "Registration failed");
+      setMessage('Registration Failed')
     }
   };
 
+  const handleFile = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      console.log("Selected file:", file);
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (reader.result) {
+          console.log("Base64 string:", reader.result); // Debugging
+          setFormData({...formData,profilePicture:reader.result})
+        } else {
+          console.error("FileReader result is empty");
+        }
+      };
+
+      reader.onerror = (error) => {
+        console.error("Error reading file:", error);
+      };
+
+      reader.readAsDataURL(file);
+    } else {
+      console.warn("No file selected");
+    }
+  };
   return (
     <div className="register-container">
       
@@ -45,7 +78,7 @@ export default function RegisterForm() {
         <source src="/assets/bg.mp4" type="video/mp4" />
       </video>
 
-   
+      {showSuccess && <div className="success-dropdown">{message}</div>}
       <div className="register-card">
         <h2>Join Us</h2>
         <p>Create your account to access exclusive deals</p>
@@ -78,7 +111,7 @@ export default function RegisterForm() {
           <input type="password" name="rePassword" value={formData.rePassword} onChange={handleChange} required />
 
           <label>Profile Picture (optional):</label>
-          <input type="file" name="profilePicture" onChange={handleChange} />
+          <input type="file" name="profilePicture" onChange={(event)=>handleFile(event)} />
 
           <button type="submit">Register</button>
           <p className="register-link">Already have an account? <Link to={'/login'}>Log In</Link></p>
