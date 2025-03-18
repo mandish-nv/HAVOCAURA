@@ -4,6 +4,7 @@ const cors = require("cors");
 const User = require("./models/user");
 const ComputerPart = require("./models/parts");
 const Laptop = require("./models/laptop");
+const Checkout = require("./models/order");
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
@@ -271,7 +272,7 @@ mongoose
         }
 
         res.status(200).json({
-          cart: user.cart
+          cart: user.cart,
         });
       } catch (error) {
         console.error(error);
@@ -348,6 +349,87 @@ mongoose
         res.status(500).json({ message: "Failed to remove item from cart" });
       }
     });
+
+    // Create Checkout Session
+    app.post("/checkout/create", async (req, res) => {
+      try {
+        const { userId } = req.body;
+        const user = await User.findById(userId);
+
+        if (!user) {
+          return res.status(404).json({ message: "User not found" });
+        }
+
+        const cart = user.cart;
+        if (
+          !cart ||
+          (cart.laptops.length === 0 &&
+            Object.values(cart.parts).every((items) => items.length === 0))
+        ) {
+          return res.status(400).json({ message: "Cart is empty" });
+        }
+
+        let totalPrice = 0;
+        const checkoutData = {
+          user: userId,
+          laptops: cart.laptops.map((item) => {
+            totalPrice += item.price * item.quantity;
+            return {
+              part: item.part,
+              price: item.price,
+              quantity: item.quantity,
+            };
+          }),
+          parts: {},
+        };
+
+        Object.keys(cart.parts).forEach((category) => {
+          checkoutData.parts[category] = cart.parts[category].map((item) => {
+            totalPrice += item.price * item.quantity;
+            return {
+              part: item.part,
+              price: item.price,
+              quantity: item.quantity,
+            };
+          });
+        });
+
+        // Calculate total price with tax and shipping
+        const tax = 0.1;
+        const shippingCost = 100;
+        checkoutData.totalPrice = totalPrice;
+        checkoutData.tax = tax;
+        checkoutData.shippingCost = shippingCost;
+
+        // Save Checkout Order
+        const newCheckout = new Checkout(checkoutData);
+        await newCheckout.save();
+
+        // Clear user's cart after checkout
+        user.cart = { laptops: [], parts: {} };
+        await user.save();
+
+        res
+          .status(201)
+          .json({
+            message: "Checkout created successfully",
+            checkoutId: newCheckout._id,
+          });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Failed to proceed to checkout" });
+      }
+    });
+
+    app.get("/checkout/:checkoutId", async (req, res) => {
+      try {
+        let checkout = await Checkout.findById(req.params.checkoutId);
+        res.json(checkout);
+      } catch (error) {
+        res.status(500).send("Error fetching checkout details");
+      }
+    });
+    
 
     app.listen(port, () => {
       console.log("Server Connected");

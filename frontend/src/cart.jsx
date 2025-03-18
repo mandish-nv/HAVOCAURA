@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // 
 import axios from "axios";
 import Navbar from "./navbar"; // Assuming you have a Navbar component
 
@@ -9,6 +10,7 @@ export default function CartList() {
   const userSession = sessionStorage.getItem("user");
   const user = JSON.parse(userSession); // Parse session data
   const userId = user._id; // Get user ID
+  const navigate = useNavigate();
 
   // Fetch cart data from the backend
   const fetchCart = async () => {
@@ -67,6 +69,20 @@ export default function CartList() {
     } catch (error) {
       console.error(error);
       alert("Failed to update cart");
+    }
+  };
+
+  const handleProceedToCheckout = async () => {
+    try {
+      const response = await axios.post("http://localhost:5000/checkout/create", {
+        userId,
+      });
+      alert(response.data.message);
+      const checkOutId = response.data.checkoutId;
+      navigate(`/checkout/${checkOutId}`); // Redirect to checkout page
+    } catch (error) {
+      console.error(error);
+      alert("Failed to proceed to checkout");
     }
   };
 
@@ -183,7 +199,8 @@ export default function CartList() {
 
           {/* Only show the Proceed to Checkout button if the cart is not empty */}
           {cart.laptops.length > 0 || Object.keys(cart.parts).length > 0 ? (
-            <button>Proceed to Checkout</button>
+            <button onClick={handleProceedToCheckout}>Proceed to Checkout</button>
+            // navigate("/checkout"); // Redirect to checkout page
           ) : (
             <p>Your cart is empty. Add some items to proceed.</p>
           )}

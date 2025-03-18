@@ -70,7 +70,7 @@ const router=createBrowserRouter([
     errorElement:<Error/>
   },
   {
-    path:'/checkout',
+    path:'/checkout/:checkoutId',
     element:<Checkout/>,  
     errorElement:<Error/>
   },
