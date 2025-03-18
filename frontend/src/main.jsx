@@ -15,6 +15,7 @@ import Photo from './photo'
 import DisplayLaptop from './components/laptopDescription'
 import DisplayPart from './components/partsDescription'
 import CartList from './cart'
+import Checkout from './checkout'
 
 
 const router=createBrowserRouter([
@@ -66,6 +67,11 @@ const router=createBrowserRouter([
   {
     path:'/cart',
     element:<CartList/>,  
+    errorElement:<Error/>
+  },
+  {
+    path:'/checkout',
+    element:<Checkout/>,  
     errorElement:<Error/>
   },
 ], { debug: true })

@@ -29,7 +29,7 @@ export default function Navbar() {
                 <div>Contact Us</div>
                 
                 <div style={{ fontSize: '1.7rem', position: 'relative' }}>
-                    <MdOutlineShoppingCart />
+                    <Link to={'/cart'}><MdOutlineShoppingCart /></Link>
                     <div className="cart-number">0</div>
                 </div>
                 <div style={{ position: 'relative',display: userData ? 'none' : '' }} onMouseEnter={() => setCheck1(true)} onMouseLeave={() => setCheck1(false)}>My Account

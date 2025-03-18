@@ -262,6 +262,93 @@ mongoose
       }
     });
 
+    // 1. Get User's Cart
+    app.get("/cart/:userId", async (req, res) => {
+      try {
+        const user = await User.findById(req.params.userId);
+        if (!user) {
+          return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json({
+          cart: user.cart
+        });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Failed to fetch cart" });
+      }
+    });
+
+    // 2. Update Quantity in Cart (increase/decrease)
+    app.post("/cart/update", async (req, res) => {
+      const { userId, itemId, category, action, partCategory } = req.body;
+
+      try {
+        const user = await User.findById(userId);
+        if (!user) {
+          return res.status(404).json({ message: "User not found" });
+        }
+
+        let item;
+        if (category === "laptop") {
+          item = user.cart.laptops.find(
+            (item) => item._id.toString() === itemId
+          );
+        } else if (category === "part") {
+          item = user.cart.parts[partCategory].find(
+            (item) => item._id.toString() === itemId
+          );
+        }
+
+        if (!item) {
+          return res.status(404).json({ message: "Item not found in cart" });
+        }
+
+        // Adjust quantity based on action
+        if (action === "increase") {
+          item.quantity += 1;
+        } else if (action === "decrease" && item.quantity > 1) {
+          item.quantity -= 1;
+        } else {
+          return res.status(400).json({ message: "Invalid action" });
+        }
+
+        await user.save();
+        res.status(200).json({ message: "Cart updated successfully" });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Failed to update cart" });
+      }
+    });
+
+    // 3. Remove Item from Cart
+    app.post("/cart/remove", async (req, res) => {
+      const { userId, itemId, category, partCategory } = req.body;
+
+      try {
+        const user = await User.findById(userId);
+        if (!user) {
+          return res.status(404).json({ message: "User not found" });
+        }
+
+        if (category === "laptop") {
+          user.cart.laptops = user.cart.laptops.filter(
+            (item) => item._id.toString() !== itemId
+          );
+        } else if (category === "part") {
+          user.cart.parts[partCategory] = user.cart.parts[partCategory].filter(
+            (item) => item._id.toString() !== itemId
+          );
+        }
+
+        await user.save();
+        res.status(200).json({ message: "Item removed from cart" });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Failed to remove item from cart" });
+      }
+    });
+
     app.listen(port, () => {
       console.log("Server Connected");
     });
