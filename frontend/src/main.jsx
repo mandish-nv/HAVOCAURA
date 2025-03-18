@@ -14,6 +14,7 @@ import BuildAPc from './buildAPc'
 import Photo from './photo'
 import DisplayLaptop from './components/laptopDescription'
 import DisplayPart from './components/partsDescription'
+import CartList from './cart'
 
 
 const router=createBrowserRouter([
@@ -60,6 +61,11 @@ const router=createBrowserRouter([
   {
     path:'/partdescription/:id',
     element:<DisplayPart/>,  
+    errorElement:<Error/>
+  },
+  {
+    path:'/cart',
+    element:<CartList/>,  
     errorElement:<Error/>
   },
 ], { debug: true })

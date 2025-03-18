@@ -21,6 +21,8 @@ const computerPartSchema = new mongoose.Schema(
         "Case",
         "Peripherals",
         "Other",
+        "HDD",  //temp
+        "SSD"  //temp
       ],
     },
     brand: {

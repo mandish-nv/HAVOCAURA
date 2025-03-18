@@ -10,7 +10,7 @@ const checkoutSchema = new mongoose.Schema(
       {
         part: { type: mongoose.Schema.Types.ObjectId, ref: "Laptop" },
         price: Number,
-        quantity: { type: Number, default: 0 },
+        quantity: { type: Number},
       },
     ],
     parts: {
@@ -18,70 +18,84 @@ const checkoutSchema = new mongoose.Schema(
         {
           part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
           price: Number,
-          quantity: { type: Number, default: 0 },
+          quantity: { type: Number},
         },
       ],
       GPU: [
         {
           part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
           price: Number,
-          quantity: { type: Number, default: 0 },
+          quantity: { type: Number},
         },
       ],
       Motherboard: [
         {
           part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
           price: Number,
-          quantity: { type: Number, default: 0 },
+          quantity: { type: Number},
         },
       ],
       RAM: [
         {
           part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
           price: Number,
-          quantity: { type: Number, default: 0 },
+          quantity: { type: Number},
         },
       ],
       Storage: [
         {
           part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
           price: Number,
-          quantity: { type: Number, default: 0 },
+          quantity: { type: Number},
         },
       ],
       Power_Supply: [
         {
           part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
           price: Number,
-          quantity: { type: Number, default: 0 },
+          quantity: { type: Number},
         },
       ],
       Cooling_System: [
         {
           part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
           price: Number,
-          quantity: { type: Number, default: 0 },
+          quantity: { type: Number},
         },
       ],
       Case: [
         {
           part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
           price: Number,
-          quantity: { type: Number, default: 0 },
+          quantity: { type: Number},
         },
       ],
       Peripherals: [
         {
           part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
           price: Number,
-          quantity: { type: Number, default: 0 },
+          quantity: { type: Number},
         },
       ],
       Other: [
         {
           part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
           price: Number,
-          quantity: { type: Number, default: 0 },
+          quantity: { type: Number},
+        },
+      ],
+      HDD: [
+        {
+          part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
+          price: Number,
+          quantity: { type: Number},
+        },
+      ],
+      SSD: [
+        {
+          part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
+          price: Number,
+          quantity: { type: Number},
         },
       ],
     },
@@ -98,6 +112,10 @@ const checkoutSchema = new mongoose.Schema(
       type: Number,
       default: 0.1, // 10% tax
     },
+    discount: {
+      type: Number,
+      default: 0, 
+    },
     expectedDeliveryDate: {
       type: Date,
       default: () => {
@@ -105,6 +123,10 @@ const checkoutSchema = new mongoose.Schema(
         return new Date(today.setDate(today.getDate() + 7)); // 7-day delivery
       },
     },
+    status: {
+      type: String,
+      default: "Pending"
+    }
   },
   { timestamps: true }
 );

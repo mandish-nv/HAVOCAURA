@@ -28,9 +28,32 @@ export default function DisplayLaptop() {
     fetchLaptopInfo();
   }, [id]);
 
-  const handleAddToCart = () => {
-    alert(`${quantity} x ${laptop.model} added to cart!`);
+  const handleAddToCart = async () => {
+    const userSession = sessionStorage.getItem("user");
+  
+    if (!userSession) {
+      alert("Please log in to add items to your cart.");
+      return;
+    }
+  
+    const user = JSON.parse(userSession); // Parse session data
+    const userId = user._id; // Get user ID
+  
+    try {
+      const response = await axios.post("http://localhost:5000/add/laptop", {
+        userId,
+        laptopId: laptop._id,
+        price: laptop.price,
+        quantity,
+      });
+  
+      alert(response.data.message);
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      alert("Failed to add to cart");
+    }
   };
+  
 
   const increaseQuantity = () => setQuantity(quantity + 1);
   const decreaseQuantity = () => setQuantity(quantity > 1 ? quantity - 1 : 1);

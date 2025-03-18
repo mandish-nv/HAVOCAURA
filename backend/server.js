@@ -125,13 +125,13 @@ mongoose
       }
     });
 
-    app.post("/findUser",async(req,res)=>{
-      const data=req.body.identifier
+    app.post("/findUser", async (req, res) => {
+      const data = req.body.identifier;
       const user = await User.findOne({
         $or: [{ email: data }, { userName: data }],
       });
-      res.send(user)
-    })
+      res.send(user);
+    });
 
     app.get("/all-laptops", async (req, res) => {
       try {
@@ -146,11 +146,9 @@ mongoose
     app.get("/all-parts", async (req, res) => {
       try {
         const category = req.query.category;
-    
-        const query = category && category !== "All" 
-          ? { category } 
-          : {};
-    
+
+        const query = category && category !== "All" ? { category } : {};
+
         const parts = await ComputerPart.find(query);
         res.json(parts);
       } catch (error) {
@@ -163,7 +161,7 @@ mongoose
       try {
         let part = await ComputerPart.findById(req.params.id);
         if (!part) {
-          part=await Laptop.findById(req.params.id);
+          part = await Laptop.findById(req.params.id);
         }
         res.json(part);
       } catch (error) {
@@ -180,18 +178,89 @@ mongoose
         res.status(500).send("Error fetching parts");
       }
     });
-    
+
     app.get("/landing-laptops", async (req, res) => {
       try {
-        const laptops = await Laptop.find({}, "brand model image price") 
-          .limit(12); 
+        const laptops = await Laptop.find({}, "brand model image price").limit(
+          12
+        );
         res.json(laptops);
       } catch (error) {
         console.error(error);
         res.status(500).send("Error fetching laptops");
       }
     });
-    
+
+    // Add laptop to cart
+    app.post("/add/laptop", async (req, res) => {
+      try {
+        const { userId, laptopId, price, quantity } = req.body;
+
+        if (!userId) {
+          return res.status(401).json({ message: "User not logged in" });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        if (!user.cart) user.cart = { laptops: [], parts: {} };
+
+        // Check if laptop is already in cart
+        const existingLaptop = user.cart.laptops.find(
+          (item) => item.part.toString() === laptopId
+        );
+        if (existingLaptop) {
+          existingLaptop.quantity += quantity;
+        } else {
+          user.cart.laptops.push({ part: laptopId, price, quantity });
+        }
+
+        await user.save();
+        res.json({
+          message: "Laptop added to cart successfully",
+          cart: user.cart,
+        });
+      } catch (error) {
+        console.error("Error adding laptop to cart:", error);
+        res.status(500).json({ message: "Server error" });
+      }
+    });
+
+    // Add computer part to cart
+    app.post("/add/part", async (req, res) => {
+      try {
+        const { userId, partId, category, price, quantity } = req.body;
+
+        if (!userId) {
+          return res.status(401).json({ message: "User not logged in" });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        if (!user.cart) user.cart = { laptops: [], parts: {} };
+        if (!user.cart.parts[category]) user.cart.parts[category] = [];
+
+        // Check if part is already in cart
+        const existingPart = user.cart.parts[category].find(
+          (item) => item.part.toString() === partId
+        );
+        if (existingPart) {
+          existingPart.quantity += quantity;
+        } else {
+          user.cart.parts[category].push({ part: partId, price, quantity });
+        }
+
+        await user.save();
+        res.json({
+          message: "Part added to cart successfully",
+          cart: user.cart,
+        });
+      } catch (error) {
+        console.error("Error adding part to cart:", error);
+        res.status(500).json({ message: "Server error" });
+      }
+    });
 
     app.listen(port, () => {
       console.log("Server Connected");
