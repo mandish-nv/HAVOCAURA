@@ -135,7 +135,7 @@ mongoose
 
     app.get("/all-laptops", async (req, res) => {
       try {
-        const laptops = await Laptop.find({}, "brand model image"); // Select only brand, model & image
+        const laptops = await Laptop.find({}, "brand model image price"); // Select only brand, model & image
         res.json(laptops);
       } catch (error) {
         console.error(error);

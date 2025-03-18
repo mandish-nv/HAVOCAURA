@@ -1,10 +1,11 @@
 import ComputerParts from "./components/computerParts";
-import "./styles/computerParts.css";
+import Navbar from "./navbar";
 
 export default function PartsList() {
   return (
     <div>
-      <h1>Computer Parts Store</h1>
+      <Navbar/>
+      <h1 style={{padding:'2rem 0'}}>Computer Parts Store</h1>
       <ComputerParts />
     </div>
   );

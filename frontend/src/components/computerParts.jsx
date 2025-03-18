@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import '../styles/part.css'
 
 export default function ComputerParts() {
   const [parts, setParts] = useState([]);
@@ -11,12 +12,10 @@ export default function ComputerParts() {
     "GPU",
     "Motherboard",
     "RAM",
-    "Storage",
-    "Power Supply",
+    "SSD",
+    "HDD",
     "Cooling System",
     "Case",
-    "Peripherals",
-    "Other",
   ];
 
   const fetchParts = async (category) => {
@@ -31,12 +30,12 @@ export default function ComputerParts() {
   }, [selectedCategory]);
 
   return (
-    <div>
+    <div className="computer-parts-container">
       <nav className="navbar">
         {categories.map((cat, index) => (
           <button
             key={index}
-            className={selectedCategory === cat ? "active" : ""}
+            className={`category-btn ${selectedCategory === cat ? "active" : ""}`}
             onClick={() => setSelectedCategory(cat)}
           >
             {cat}
@@ -44,17 +43,21 @@ export default function ComputerParts() {
         ))}
       </nav>
 
-      <div className="parts-container">
+      <div className="parts-list">
         {parts.length === 0 ? (
-          <p>No data available</p>
+          <p className="no-data-message">No data available</p>
         ) : (
           parts.map((part, index) => (
             <div className="part-card" key={index}>
-              <img src={part.image || "default-part.jpg"} alt={part.name} />
-              <h3>{part.name}</h3>
-              <p>{part.category}</p>
-              <p>{part.brand} - {part.model}</p>
-              <p>💲{part.price}</p>
+              <div className="part-image-container">
+                <img src={part.image || "default-part.jpg"} alt={part.name} />
+              </div>
+              <div className="part-details">
+                <h3>{part.name}</h3>
+                <p className="category">{part.category}</p>
+                <p className="brand-model">{part.brand} - {part.model}</p>
+                <p className="price">Rs. {part.price}</p>
+              </div>
             </div>
           ))
         )}

@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Navbar from "./navbar";
+import './styles/laptop.css'
 
 export default function LaptopList() {
   const [laptops, setLaptops] = useState([]);
@@ -14,14 +16,21 @@ export default function LaptopList() {
   }, []);
 
   return (
-    <div className="laptop-container">
-      {laptops.map((laptop, index) => (
-        <div className="laptop-card" key={index}>
-          <img src={laptop.image || "default-laptop.jpg"} />
-          <p>{laptop.brand}</p>
-          <p>{laptop.model}</p>
-        </div>
-      ))}
-    </div>
+    <>
+      <Navbar />
+      <div className="laptop-container">
+        {laptops.map((laptop, index) => (
+          <div className="laptop-card" key={index}>
+            <div className="laptop-image-container">
+              <img src={laptop.image || "default-laptop.jpg"} className="laptop-image" alt={laptop.model} />
+            </div>
+            <div className="laptop-details">
+              <p className="laptop-model">{laptop.model}</p>
+              <p className="laptop-price">Rs. {laptop.price}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
   );
 }

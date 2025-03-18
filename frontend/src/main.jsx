@@ -8,12 +8,14 @@ import LoginForm from './login'
 import ComputerPartForm from './partsDataEntry'
 import LaptopForm from './laptopDataEntry'
 import RegisterForm from './registration'
-// import LogoutButton from './logout'
+
 import LaptopList from './storeLaptops'
 import PartsList from './storeParts'
 // import DisplayPart from './components/partsDescription' //routing needed
 // import DisplayLaptop from './components/laptopDescription' //routing needed
 import BuildAPc from './buildAPc'
+import Photo from './photo'
+
 
 const router=createBrowserRouter([
   {
@@ -56,23 +58,15 @@ const router=createBrowserRouter([
     element:<ComputerPartForm/>,  
     errorElement:<Error/>
   },
+  {
+    path:'/photo',
+    element:<Photo/>,  
+    errorElement:<Error/>
+  },
 ], { debug: true })
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <RouterProvider router={router}></RouterProvider> 
-    {/* <ComputerPartForm/>
-    <LaptopForm/>
-    <RegisterForm/> 
-    <LoginForm/>
-    <LogoutButton/>*/}
-
-    {/* <LaptopList/>
-    <PartsList/> */}
-    
-    {/* <DisplayPart/> 
-    <DisplayLaptop/>*/}
-
-    {/* <BuildAPc/> */}
   </StrictMode>,
 )

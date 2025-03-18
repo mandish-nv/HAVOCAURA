@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import "./styles/buildaPC.css";
+import Navbar from "./navbar";
 
 export default function BuildAPc() {
   const [formData, setFormData] = useState({
@@ -17,121 +19,118 @@ export default function BuildAPc() {
   });
 
   const [parts, setParts] = useState({});
-  const [searchQuery, setSearchQuery] = useState({});
-  
+  const [errorMessage, setErrorMessage] = useState("");
+
   const categories = [
     "CPU",
     "GPU",
     "Motherboard",
     "RAM",
-    "Storage",
-    "Power_Supply",
-    "Cooling_System",
+    "SSD",
+    "HDD",
+    "Cooling System",
     "Case",
-    "Peripherals",
-    "Other",
   ];
-  
-  // ✅ Fetch Parts from Database
+
+  // Fetch parts by category from the API
   const fetchPartsByCategory = async (category) => {
     try {
       const response = await axios.get(`http://localhost:5000/retrieveByCategory/${category}`);
       setParts((prev) => ({ ...prev, [category]: response.data }));
     } catch (error) {
       console.error(`Error fetching ${category}:`, error);
+      setErrorMessage(`Failed to load ${category} parts. Please try again later.`);
+      setParts((prev) => ({ ...prev, [category]: [] }));
     }
   };
-  
+
   useEffect(() => {
     categories.forEach((cat) => fetchPartsByCategory(cat));
   }, []);
 
-  // ✅ Handle Search Input
-  const handleSearch = (category, value) => {
-    setSearchQuery((prev) => ({ ...prev, [category]: value }));
-  };
-  
-  // ✅ Handle Part Selection
+  // Handle part selection
   const handleSelect = (category, partId) => {
     setFormData((prev) => {
       if (category === "Other") {
         const updatedOther = prev.Other.includes(partId)
-        ? prev.Other.filter((id) => id !== partId) // Deselect item
-        : [...prev.Other, partId]; // Select item
+          ? prev.Other.filter((id) => id !== partId)
+          : [...prev.Other, partId];
         return { ...prev, Other: updatedOther };
       }
       return {
         ...prev,
-        [category]: prev[category] === partId ? "" : partId, // Deselect if already selected
+        [category]: partId,
       };
     });
   };
-  
-  //ADD LATER
 
-  // ✅ Submit Form and Redirect to Checkout Page
-  // const navigate = useNavigate();
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   navigate("/checkout", { state: formData });
-  // };
-  
+  // Handle form submission
+  const navigate = useNavigate();
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    navigate("/checkout", { state: formData });
+  };
+
+  // Function to get the selected part details
+  const getSelectedPartImage = (category) => {
+    const selectedPartId = formData[category];
+    const selectedPart = parts[category]?.find((part) => part._id === selectedPartId);
+    return selectedPart ? selectedPart.image : "";
+  };
+
   return (
-    <div>
-      <h1>Build a PC</h1>
-      <form>
-        {/* onSubmit={handleSubmit} */}
+    <>
+    <Navbar/>
+    <div className="build-pc-container">
+      <h1 className="page-title">Build Your Dream PC</h1>
+      {errorMessage && <div className="error-message">{errorMessage}</div>}
+      <form onSubmit={handleSubmit} className="build-form">
         {categories.map((cat, index) => (
-          <div key={index} style={{ paddingBottom: "4rem" }}>
-            <h3>
+          <div key={index} className="category-container">
+            <h3 className="category-title">
               {cat}:{" "}
-              <span>
+              <span className={formData[cat] ? "selected-text" : "not-selected"}>
                 {cat === "Other"
                   ? formData.Other.length > 0
                     ? `${formData.Other.length} item(s) selected`
                     : "Not selected"
                   : formData[cat]
-                    ? "Item selected"
-                    : "Not selected"}
+                  ? "Item selected"
+                  : "Not selected"}
               </span>
             </h3>
 
-            {/* 🔎 Search Bar */}
-            <input
-              type="text"
-              placeholder={`Search ${cat}...`}
-              value={searchQuery[cat] || ""}
-              onChange={(e) => handleSearch(cat, e.target.value)}
-            />
-
-            {/* ✅ List of Available Parts */}
-            <ul>
-              {parts[cat]
-                ?.filter((part) =>
-                  part.name.toLowerCase().includes((searchQuery[cat] || "").toLowerCase())
-                )
-                .map((part) => (
-                  <li
-                    key={part._id}
-                    onClick={() => handleSelect(cat, part._id)}
-                    style={{
-                      cursor: "pointer",
-                      backgroundColor:
-                        (formData[cat] === part._id || formData.Other.includes(part._id))
-                          ? "#d3f9d8"
-                          : "",
-                    }}
-                  >
-                    {part.name+"\t"}
-                    {"$"+part.price}
-                  </li>
+            {/* Dropdown for Part Selection */}
+            <div className="dropdown-container">
+              <select
+                value={formData[cat] || ""}
+                onChange={(e) => handleSelect(cat, e.target.value)}
+                className="dropdown-select"
+              >
+                <option value="">Select a {cat}</option>
+                {parts[cat]?.map((part) => (
+                  <option key={part._id} value={part._id}>
+                    {part.model} - Rs.{part.price}
+                  </option>
                 ))}
-            </ul>
+              </select>
+
+              {/* Display the image of the selected part */}
+              <div className="selected-part-image">
+                {formData[cat] && (
+                  <img
+                    src={getSelectedPartImage(cat)}
+                    alt="Selected Part"
+                    className="selected-part-img"
+                  />
+                )}
+              </div>
+            </div>
           </div>
         ))}
-
-        <button type="submit">Proceed to Checkout</button>
+        <button type="submit" className="checkout-button">Proceed to Checkout</button>
       </form>
     </div>
+    </>
   );
 }

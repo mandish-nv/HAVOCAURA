@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const computerPartSchema = new mongoose.Schema(
   {
-    name: {
+    model: {
       type: String,
       required: true,
       trim: true,
@@ -28,11 +28,7 @@ const computerPartSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    model: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+    
     price: {
       type: Number,
       required: true,
