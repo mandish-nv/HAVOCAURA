@@ -107,14 +107,6 @@
   }
   
 
-  @media (max-width: 400px) {
-    .login-card {
-      width: 90%;
-      padding: 20px;
-    }
-  }
-  
-
   input, select, button {
     background-color: rgba(0, 0, 0, 1);  
     color: white;                          

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import '../styles/part.css'
+import { Link } from "react-router-dom";
 
 export default function ComputerParts() {
   const [parts, setParts] = useState([]);
@@ -55,7 +56,7 @@ export default function ComputerParts() {
               <div className="part-details">
                 <h3>{part.name}</h3>
                 <p className="category">{part.category}</p>
-                <p className="brand-model">{part.brand} - {part.model}</p>
+                <p className="brand-model"><Link to={`/partdescription/${part._id}`} className="link">{part.brand} - {part.model}</Link></p>
                 <p className="price">Rs. {part.price}</p>
               </div>
             </div>

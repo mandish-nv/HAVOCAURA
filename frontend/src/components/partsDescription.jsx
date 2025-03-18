@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import '../styles/LaptopDetails.css'
+import Navbar from "../navbar";
+import { MdOutlineShoppingCart } from "react-icons/md";
 
 export default function DisplayPart() {
   const { id } = useParams();
@@ -8,6 +11,7 @@ export default function DisplayPart() {
   const [part, setPart] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     const fetchPartInfo = async () => {
@@ -24,25 +28,46 @@ export default function DisplayPart() {
     fetchPartInfo();
   }, [id]);
 
-  // Handle loading and error states
-  if (loading) {
-    return <p>Loading part details...</p>;
-  }
+  const handleAddToCart = () => {
+    alert(`${quantity} x ${laptop.model} added to cart!`);
+  };
 
-  if (error) {
-    return <p>Error: {error}</p>;
-  }
+  const increaseQuantity = () => setQuantity(quantity + 1);
+  const decreaseQuantity = () => setQuantity(quantity > 1 ? quantity - 1 : 1);
+
+  if (loading) return <p className="laptop-details-loading">Loading laptop details...</p>;
+  if (error) return <p className="laptop-details-error">Error: {error}</p>;
 
   return (
-    <div className="part-detail-container">
-      <h2>{part.name}</h2>
-      <img src={part.image || "default-part.jpg"} alt={part.name} />
-      <p><strong>Category:</strong> {part.category}</p>
-      <p><strong>Brand:</strong> {part.brand}</p>
-      <p><strong>Model:</strong> {part.model}</p>
-      <p><strong>Price:</strong> 💲{part.price}</p>
-      <p><strong>Specifications:</strong> {part.specifications}</p>
-      <p><strong>Description:</strong> {part.description}</p>
-    </div>
+    <>    
+        <Navbar/>
+        <div className="laptop-details-container">
+          <div className="laptop-details-left">
+            <img className="laptop-details-image" src={part.image || "default-laptop.jpg"} alt={part.model} />
+          </div>
+    
+          <div className="laptop-details-right">
+            <h2 className="laptop-details-title">{part.brand} {part.model}</h2>
+    
+            <p className="laptop-details-price">Rs. {part.price}</p>
+    
+            <div className="laptop-details-quantity">
+              <button onClick={decreaseQuantity}>−</button>
+              <span>{quantity}</span>
+              <button onClick={increaseQuantity}>+</button>
+            </div>
+    
+            <button className="laptop-details-cart-button" onClick={handleAddToCart}><MdOutlineShoppingCart /> Add to Cart</button>
+    
+            <h3 className="laptop-details-features-title">Key Features</h3>
+            <ul className="laptop-details-features-list">
+              <li><strong>Category:</strong> {part.category}</li>
+              <li><strong>Model:</strong> {part.model}</li>
+              <li><strong>Description:</strong> {part.description}</li>
+              <li><strong>Warranty:</strong> 1 Year</li>
+            </ul>
+          </div>
+        </div>
+        </>
   );
 }

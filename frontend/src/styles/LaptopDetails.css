@@ -1,0 +1,117 @@
+
+.laptop-details-container {
+  display: flex;
+  max-width: 1100px;
+  margin: 10px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+
+.laptop-details-left {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.laptop-details-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+
+.laptop-details-right {
+  flex: 1;
+  padding: 20px;
+}
+
+.laptop-details-title {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.laptop-details-price {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #d9534f;
+  margin: 10px 0;
+}
+
+
+
+.laptop-details-quantity {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.laptop-details-quantity button {
+  background: #d9534f;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+.laptop-details-quantity button:hover {
+  background: #c9302c;
+}
+
+.laptop-details-quantity span {
+  padding: 0 15px 10px 15px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+
+.laptop-details-cart-button {
+  margin-top: 20px;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  background: #28a745;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.laptop-details-cart-button:hover {
+  background: #218838;
+  transform: scale(1.05);
+}
+
+
+.laptop-details-features-title {
+  margin-top: 20px;
+  font-size: 1.4rem;
+  font-weight: bold;
+  padding-bottom: 0.5rem;
+}
+
+.laptop-details-features-list li {
+  font-size: 1.2rem;
+  margin: 5px 0;
+}
+
+.laptop-details-loading,
+.laptop-details-error {
+  text-align: center;
+  font-size: 18px;
+  color: red;
+  margin-top: 20px;
+}
+
+

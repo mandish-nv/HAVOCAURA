@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "./navbar";
 import './styles/laptop.css'
+import { Link } from "react-router-dom";
+
 
 export default function LaptopList() {
   const [laptops, setLaptops] = useState([]);
@@ -25,7 +27,7 @@ export default function LaptopList() {
               <img src={laptop.image || "default-laptop.jpg"} className="laptop-image" alt={laptop.model} />
             </div>
             <div className="laptop-details">
-              <p className="laptop-model">{laptop.model}</p>
+              <p className="laptop-model"><Link to={`/laptopdescription/${laptop._id}`} className="link">{laptop.model}</Link></p>
               <p className="laptop-price">Rs. {laptop.price}</p>
             </div>
           </div>

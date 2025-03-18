@@ -13,8 +13,8 @@ export default function Navbar() {
     }
     return (
         <div className="nav-bar">
-            <div>Logo
-
+            <div style={{height:'70px',width:'70px'}}>
+                <img src="logo.png" style={{height:'100%',width:'100%',objectFit:'cover'}}/>
             </div>
             <div className="nav-btn">
                 <div><Link to={'/'} className="link">Home</Link></div>

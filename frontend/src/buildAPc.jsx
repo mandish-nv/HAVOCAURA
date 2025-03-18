@@ -48,7 +48,7 @@ export default function BuildAPc() {
     categories.forEach((cat) => fetchPartsByCategory(cat));
   }, []);
 
-  // Handle part selection
+
   const handleSelect = (category, partId) => {
     setFormData((prev) => {
       if (category === "Other") {
@@ -64,14 +64,14 @@ export default function BuildAPc() {
     });
   };
 
-  // Handle form submission
+  
   const navigate = useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();
     navigate("/checkout", { state: formData });
   };
 
-  // Function to get the selected part details
+
   const getSelectedPartImage = (category) => {
     const selectedPartId = formData[category];
     const selectedPart = parts[category]?.find((part) => part._id === selectedPartId);
@@ -80,57 +80,59 @@ export default function BuildAPc() {
 
   return (
     <>
-    <Navbar/>
-    <div className="build-pc-container">
-      <h1 className="page-title">Build Your Dream PC</h1>
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
-      <form onSubmit={handleSubmit} className="build-form">
-        {categories.map((cat, index) => (
-          <div key={index} className="category-container">
-            <h3 className="category-title">
-              {cat}:{" "}
-              <span className={formData[cat] ? "selected-text" : "not-selected"}>
-                {cat === "Other"
-                  ? formData.Other.length > 0
-                    ? `${formData.Other.length} item(s) selected`
-                    : "Not selected"
-                  : formData[cat]
-                  ? "Item selected"
-                  : "Not selected"}
-              </span>
-            </h3>
+      <Navbar />
+      <div className="build-pc-container">
+        <h1 className="page-title">Build Your Dream PC</h1>
+        {errorMessage && <div className="error-message">{errorMessage}</div>}
+        <form onSubmit={handleSubmit} className="build-form">
+          {categories.map((cat, index) => (
+            <div key={index} className="category-container">
+              <h3 className="category-title">
+                {cat}:{" "}
+                <span className={formData[cat] ? "selected-text" : "not-selected"}>
+                  {cat === "Other"
+                    ? formData.Other.length > 0
+                      ? `${formData.Other.length} item(s) selected`
+                      : "Not selected"
+                    : formData[cat]
+                    ? "Item selected"
+                    : "Not selected"}
+                </span>
+              </h3>
 
-            {/* Dropdown for Part Selection */}
-            <div className="dropdown-container">
-              <select
-                value={formData[cat] || ""}
-                onChange={(e) => handleSelect(cat, e.target.value)}
-                className="dropdown-select"
-              >
-                <option value="">Select a {cat}</option>
-                {parts[cat]?.map((part) => (
-                  <option key={part._id} value={part._id}>
-                    {part.model} - Rs.{part.price}
-                  </option>
-                ))}
-              </select>
+              
+              <div className="dropdown-container">
+                <select
+                  value={formData[cat] || ""}
+                  onChange={(e) => handleSelect(cat, e.target.value)}
+                  className="dropdown-select"
+                >
+                  <option value="">Select a {cat}</option>
+                  {parts[cat]?.map((part) => (
+                    <option key={part._id} value={part._id}>
+                      {part.model} - Rs.{part.price}
+                    </option>
+                  ))}
+                </select>
 
-              {/* Display the image of the selected part */}
-              <div className="selected-part-image">
-                {formData[cat] && (
-                  <img
-                    src={getSelectedPartImage(cat)}
-                    alt="Selected Part"
-                    className="selected-part-img"
-                  />
-                )}
+                
+                <div className="selected-part-image">
+                  {formData[cat] && (
+                    <img
+                      src={getSelectedPartImage(cat)}
+                      alt="Selected Part"
+                      className="selected-part-img"
+                    />
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-        <button type="submit" className="checkout-button">Proceed to Checkout</button>
-      </form>
-    </div>
+          ))}
+          <button type="submit" className="checkout-button">
+            Proceed to Checkout
+          </button>
+        </form>
+      </div>
     </>
   );
 }

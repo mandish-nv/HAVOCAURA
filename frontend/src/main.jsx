@@ -5,16 +5,15 @@ import { createBrowserRouter, RouterProvider } from 'react-router'
 import './styles/index.css'
 import LandingPage from './landingPage'
 import LoginForm from './login'
-import ComputerPartForm from './partsDataEntry'
-import LaptopForm from './laptopDataEntry'
+
 import RegisterForm from './registration'
 
 import LaptopList from './storeLaptops'
 import PartsList from './storeParts'
-// import DisplayPart from './components/partsDescription' //routing needed
-// import DisplayLaptop from './components/laptopDescription' //routing needed
 import BuildAPc from './buildAPc'
 import Photo from './photo'
+import DisplayLaptop from './components/laptopDescription'
+import DisplayPart from './components/partsDescription'
 
 
 const router=createBrowserRouter([
@@ -49,18 +48,18 @@ const router=createBrowserRouter([
     errorElement:<Error/>
   },
   {
-    path:'/laptopdata',
-    element:<LaptopForm/>,  
-    errorElement:<Error/>
-  },
-  {
-    path:'/partsdata',
-    element:<ComputerPartForm/>,  
-    errorElement:<Error/>
-  },
-  {
     path:'/photo',
     element:<Photo/>,  
+    errorElement:<Error/>
+  },
+  {
+    path:'/laptopdescription/:id',
+    element:<DisplayLaptop/>,  
+    errorElement:<Error/>
+  },
+  {
+    path:'/partdescription/:id',
+    element:<DisplayPart/>,  
     errorElement:<Error/>
   },
 ], { debug: true })

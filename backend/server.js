@@ -161,9 +161,9 @@ mongoose
 
     app.get("/retrieveById/:id", async (req, res) => {
       try {
-        const part = await ComputerPart.findById(req.params.id);
+        let part = await ComputerPart.findById(req.params.id);
         if (!part) {
-          return res.status(404).send("Part not found");
+          part=await Laptop.findById(req.params.id);
         }
         res.json(part);
       } catch (error) {
@@ -178,6 +178,17 @@ mongoose
         res.json(parts);
       } catch (error) {
         res.status(500).send("Error fetching parts");
+      }
+    });
+    
+    app.get("/landing-laptops", async (req, res) => {
+      try {
+        const laptops = await Laptop.find({}, "brand model image price") 
+          .limit(12); 
+        res.json(laptops);
+      } catch (error) {
+        console.error(error);
+        res.status(500).send("Error fetching laptops");
       }
     });
     

@@ -4,12 +4,15 @@ body{
     font-family: "Poppins", sans-serif;
     font-weight: 400;
     font-style: normal;
+  background: linear-gradient(135deg, #f4f4f4, #e1e1e1);
+  overflow-x: hidden;
+
 }
 
 .nav-bar{
     display:flex;
-    justify-content: space-around;
-    padding: 2rem 0;
+    justify-content: space-between;
+    padding: 1rem 3rem;
     background-color: rgb(222, 222, 222);
 
 }
@@ -38,7 +41,7 @@ body{
     position: absolute;
     top: 40px;
     left: -10px;
-    width: 150px;
+    width: 160px;
     border-top: 2px red solid;
     background-color: rgb(239, 239, 239);
     display: flex;
