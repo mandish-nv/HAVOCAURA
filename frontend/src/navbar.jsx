@@ -42,7 +42,10 @@ export default function Navbar() {
                     <div  className="circle" >
                         <img src={userData.profilePicture} style={{ height: '100%', width: '100%', objectFit: 'cover' }} />
                     </div>
-                    <div className="logout" style={{ opacity: check2 ? '1' : '0' }} color="black" onClick={logout}>Logout</div>
+                    <div className="logout" >
+                        <div style={{ opacity: check2 ? '1' : '0' }} color="black"><Link to={`/viewOrders`}>View orders</Link></div>
+                        <div style={{ opacity: check2 ? '1' : '0' }} color="black" onClick={logout}>Logout</div>
+                    </div>
                 </div>
             </div>
         </div>

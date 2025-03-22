@@ -16,6 +16,7 @@ import DisplayLaptop from './components/laptopDescription'
 import DisplayPart from './components/partsDescription'
 import CartList from './cart'
 import Checkout from './checkout'
+import ViewOrders from './components/viewOrders'
 
 
 const router=createBrowserRouter([
@@ -72,6 +73,11 @@ const router=createBrowserRouter([
   {
     path:'/checkout/:checkoutId',
     element:<Checkout/>,  
+    errorElement:<Error/>
+  },
+  {
+    path:'/viewOrders',
+    element:<ViewOrders/>,  
     errorElement:<Error/>
   },
 ], { debug: true })

@@ -422,50 +422,54 @@ mongoose
       try {
         const { userId, formData } = req.body;
         const user = await User.findById(userId);
-    
+
         if (!user) {
           return res.status(404).json({ message: "User not found" });
         }
-    
+
         if (!formData || Object.keys(formData).length === 0) {
           return res.status(400).json({ message: "Form data is empty" });
         }
-    
+
         let totalPrice = 0;
         const parts = [];
-    
+
         await Promise.all(
           Object.keys(formData).map(async (key) => {
             const partId = formData[key];
-    
+
             // Validate ObjectId format
             if (!mongoose.Types.ObjectId.isValid(partId)) {
               console.warn(`Skipping invalid part ID for ${key}: ${partId}`);
               return;
             }
-    
+
             const part = await ComputerPart.findById(partId);
             if (!part) {
-              return res.status(404).json({ message: `Part not found: ${key}` });
+              return res
+                .status(404)
+                .json({ message: `Part not found: ${key}` });
             }
             totalPrice += part.price;
             parts.push({
               part: part._id, // Store the part's _id not key.
               details: part,
-              category : part.category,
-              price: part.price
+              category: part.category,
+              price: part.price,
             });
           })
         );
-    
+
         if (parts.length === 0) {
-          return res.status(400).json({ message: "No valid parts found in form data" });
+          return res
+            .status(400)
+            .json({ message: "No valid parts found in form data" });
         }
-    
+
         // Calculate total price with tax and shipping
         const tax = 0.1;
         const shippingCost = 100;
-    
+
         const checkoutData = {
           user: userId,
           parts: {},
@@ -474,7 +478,7 @@ mongoose
           tax: tax,
           shippingCost: shippingCost,
         };
-    
+
         parts.forEach((item) => {
           if (!checkoutData.parts[item.category]) {
             checkoutData.parts[item.category] = [];
@@ -485,11 +489,11 @@ mongoose
             quantity: 1,
           });
         });
-    
+
         // Save Checkout Order
         const newCheckout = new Checkout(checkoutData);
         await newCheckout.save();
-    
+
         res.status(201).json({
           message: "Checkout created successfully",
           checkoutId: newCheckout._id,
@@ -506,6 +510,31 @@ mongoose
         res.json(checkout);
       } catch (error) {
         res.status(500).send("Error fetching checkout details");
+      }
+    });
+
+    app.get("/viewOrders/:userId", async (req, res) => {
+      const userId = req.params.userId;
+
+      try {
+        // Validate ObjectId format
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+          return res.status(400).json({ message: "Invalid user ID" });
+        }
+
+        const orders = await Checkout.find({ user: userId })
+          .sort({ createdAt: -1 });
+
+        if (orders.length === 0) {
+          return res
+            .status(404)
+            .json({ message: "No orders found for this user." });
+        }
+
+        res.json(orders);
+      } catch (error) {
+        console.error("Error fetching user orders:", error);
+        res.status(500).json({ message: "Failed to retrieve user orders" });
       }
     });
 
