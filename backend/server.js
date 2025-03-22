@@ -350,8 +350,7 @@ mongoose
       }
     });
 
-    // Create Checkout Session
-    app.post("/checkout/create", async (req, res) => {
+    app.post("/checkout/create/cart", async (req, res) => {
       try {
         const { userId } = req.body;
         const user = await User.findById(userId);
@@ -409,14 +408,94 @@ mongoose
         user.cart = { laptops: [], parts: {} };
         await user.save();
 
-        res
-          .status(201)
-          .json({
-            message: "Checkout created successfully",
-            checkoutId: newCheckout._id,
-          });
+        res.status(201).json({
+          message: "Checkout created successfully",
+          checkoutId: newCheckout._id,
+        });
       } catch (error) {
         console.error(error);
+        res.status(500).json({ message: "Failed to proceed to checkout" });
+      }
+    });
+
+    app.post("/checkout/create/buildAPc", async (req, res) => {
+      try {
+        const { userId, formData } = req.body;
+        const user = await User.findById(userId);
+    
+        if (!user) {
+          return res.status(404).json({ message: "User not found" });
+        }
+    
+        if (!formData || Object.keys(formData).length === 0) {
+          return res.status(400).json({ message: "Form data is empty" });
+        }
+    
+        let totalPrice = 0;
+        const parts = [];
+    
+        await Promise.all(
+          Object.keys(formData).map(async (key) => {
+            const partId = formData[key];
+    
+            // Validate ObjectId format
+            if (!mongoose.Types.ObjectId.isValid(partId)) {
+              console.warn(`Skipping invalid part ID for ${key}: ${partId}`);
+              return;
+            }
+    
+            const part = await ComputerPart.findById(partId);
+            if (!part) {
+              return res.status(404).json({ message: `Part not found: ${key}` });
+            }
+            totalPrice += part.price;
+            parts.push({
+              part: part._id, // Store the part's _id not key.
+              details: part,
+              category : part.category,
+              price: part.price
+            });
+          })
+        );
+    
+        if (parts.length === 0) {
+          return res.status(400).json({ message: "No valid parts found in form data" });
+        }
+    
+        // Calculate total price with tax and shipping
+        const tax = 0.1;
+        const shippingCost = 100;
+    
+        const checkoutData = {
+          user: userId,
+          parts: {},
+          laptops: [],
+          totalPrice: totalPrice,
+          tax: tax,
+          shippingCost: shippingCost,
+        };
+    
+        parts.forEach((item) => {
+          if (!checkoutData.parts[item.category]) {
+            checkoutData.parts[item.category] = [];
+          }
+          checkoutData.parts[item.category].push({
+            part: item.part,
+            price: item.price,
+            quantity: 1,
+          });
+        });
+    
+        // Save Checkout Order
+        const newCheckout = new Checkout(checkoutData);
+        await newCheckout.save();
+    
+        res.status(201).json({
+          message: "Checkout created successfully",
+          checkoutId: newCheckout._id,
+        });
+      } catch (error) {
+        console.error("Error processing checkout:", error);
         res.status(500).json({ message: "Failed to proceed to checkout" });
       }
     });
@@ -429,7 +508,6 @@ mongoose
         res.status(500).send("Error fetching checkout details");
       }
     });
-    
 
     app.listen(port, () => {
       console.log("Server Connected");

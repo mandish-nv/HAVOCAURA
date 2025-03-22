@@ -74,7 +74,7 @@ export default function CartList() {
 
   const handleProceedToCheckout = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/checkout/create", {
+      const response = await axios.post("http://localhost:5000/checkout/create/cart", {
         userId,
       });
       alert(response.data.message);

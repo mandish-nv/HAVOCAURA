@@ -56,7 +56,7 @@ const checkoutSchema = new mongoose.Schema(
           quantity: { type: Number},
         },
       ],
-      Cooling_System: [
+      "Cooling System": [
         {
           part: { type: mongoose.Schema.Types.ObjectId, ref: "ComputerPart" },
           price: Number,

@@ -5,17 +5,19 @@ import "./styles/buildaPC.css";
 import Navbar from "./navbar";
 
 export default function BuildAPc() {
+  const userSession = sessionStorage.getItem("user");
+  const user = JSON.parse(userSession); // Parse session data
+  const userId = user._id; // Get user ID
+
   const [formData, setFormData] = useState({
-    CPU: "",
-    GPU: "",
-    Motherboard: "",
-    RAM: "",
-    Storage: "",
-    Power_Supply: "",
-    Cooling_System: "",
-    Case: "",
-    Peripherals: "",
-    Other: [],
+    "CPU": "",
+    "GPU": "",
+    "Motherboard": "",
+    "RAM": "",
+    "SSD": "",
+    "HDD": "",
+    "Cooling System": "",
+    "Case": "",
   });
 
   const [parts, setParts] = useState({});
@@ -66,9 +68,20 @@ export default function BuildAPc() {
 
   
   const navigate = useNavigate();
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate("/checkout", { state: formData });
+    try {
+      const response = await axios.post("http://localhost:5000/checkout/create/buildAPc", {
+        userId, formData
+      });
+      alert(response.data.message);
+      const checkOutId = response.data.checkoutId;
+      navigate(`/checkout/${checkOutId}`); // Redirect to checkout page
+    } catch (error) {
+      console.error(error);
+      alert("Failed to proceed to checkout");
+    }
   };
 
 
