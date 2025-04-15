@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Navbar from "./navbar";
+import "./styles/Checkout.css"; // Updated styles
 
 export default function CheckoutDetails() {
-  const { checkoutId } = useParams(); // Get checkoutId from URL
+  const { checkoutId } = useParams();
   const [checkout, setCheckout] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -29,53 +30,59 @@ export default function CheckoutDetails() {
   if (error) return <p>{error}</p>;
 
   return (
-    <div>
+    <div className="cd-container">
       <Navbar />
-      <h1>Checkout Details</h1>
+      <h1 className="cd-title">Checkout Details</h1>
 
-      <div className="checkout-summary">
+      <div className="cd-summary-box">
         <h2>Order ID: {checkout._id}</h2>
         <p><strong>User:</strong> {checkout.user}</p>
         <p><strong>Status:</strong> {checkout.status}</p>
         <p><strong>Expected Delivery:</strong> {new Date(checkout.expectedDeliveryDate).toDateString()}</p>
       </div>
 
-      {/* Laptops in Checkout */}
+      {/* Laptops */}
       {checkout.laptops.length > 0 && (
         <div>
-          <h2>Laptops</h2>
-          {checkout.laptops.map((laptop) => (
-            <div key={laptop._id} className="checkout-item">
-              <div>
-                <h3>{laptop.part}</h3>
-                <p>Price: Rs. {laptop.price}</p>
-                <p>Quantity: {laptop.quantity}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Parts in Checkout */}
-      {Object.keys(checkout.parts).map((partCategory) =>
-        checkout.parts[partCategory].length > 0 ? (
-          <div key={partCategory}>
-            <h2>{partCategory}</h2>
-            {checkout.parts[partCategory].map((part) => (
-              <div key={part._id} className="checkout-item">
-                <div>
-                  <h3>{part.part}</h3>
-                  <p>Price: Rs. {part.price}</p>
-                  <p>Quantity: {part.quantity}</p>
+          <h2 className="cd-section-title">Laptops</h2>
+          <div className="cd-item-grid">
+            {checkout.laptops.map((laptop, index) => (
+              <div key={index} className="cd-item-box">
+                <img src={laptop.part.image} alt={laptop.part.name} className="cd-image" />
+                <div className="cd-details">
+                  <h3>{laptop.part.name}</h3>
+                  <p>Price: Rs. {laptop.price}</p>
+                  <p>Quantity: {laptop.quantity}</p>
                 </div>
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Parts */}
+      {Object.keys(checkout.parts).map((category) =>
+        checkout.parts[category].length > 0 ? (
+          <div key={category}>
+            <h2 className="cd-section-title">{category}</h2>
+            <div className="cd-item-grid">
+              {checkout.parts[category].map((part, index) => (
+                <div key={index} className="cd-item-box">
+                  <img src={part.part.image} alt={part.part.name} className="cd-image" />
+                  <div className="cd-details">
+                    <h3>{part.part.name}</h3>
+                    <p>Price: Rs. {part.price}</p>
+                    <p>Quantity: {part.quantity}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         ) : null
       )}
 
-      {/* Pricing Details */}
-      <div className="checkout-summary">
+      {/* Price Summary */}
+      <div className="cd-summary-box">
         <h2>Price Summary</h2>
         <p><strong>Subtotal:</strong> Rs. {checkout.totalPrice}</p>
         <p><strong>Shipping Cost:</strong> Rs. {checkout.shippingCost}</p>

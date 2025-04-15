@@ -17,6 +17,7 @@ import DisplayPart from './components/partsDescription'
 import CartList from './cart'
 import Checkout from './checkout'
 import ViewOrders from './components/viewOrders'
+import Esewa from './Esewa'
 
 
 const router=createBrowserRouter([
@@ -78,6 +79,11 @@ const router=createBrowserRouter([
   {
     path:'/viewOrders',
     element:<ViewOrders/>,  
+    errorElement:<Error/>
+  },
+  {
+    path:'/esewa',
+    element:<Esewa/>,  
     errorElement:<Error/>
   },
 ], { debug: true })

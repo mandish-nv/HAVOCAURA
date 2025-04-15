@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "../navbar"; // Adjust the path as needed
+import "../styles/Orders.css"; // Updated styles
 
 export default function ViewOrders() {
   const userSession = sessionStorage.getItem("user");
@@ -18,6 +19,7 @@ export default function ViewOrders() {
         const response = await axios.get(
           `http://localhost:5000/viewOrders/${userId}` // Use the detailed route
         );
+        
         setOrders(response.data);
       } catch (error) {
         setError(error.response?.data?.message || "Failed to fetch data");
@@ -51,7 +53,7 @@ export default function ViewOrders() {
     return (
       <div>
         <Navbar />
-        <h1 style={{ padding: "2rem 0" }}>Orders: </h1>
+        <h1 className="vo-title">Orders: </h1>
         <p>No orders found.</p>
       </div>
     );
@@ -62,9 +64,9 @@ export default function ViewOrders() {
   };
 
   return (
-    <div>
+    <div className="vo-container">
       <Navbar />
-      <h1 style={{ padding: "2rem 0" }}>Orders: </h1>
+      <h1 className="vo-title">Orders: </h1>
       {orders.map((order) => {
         const finalTotal =
           order.totalPrice +
@@ -76,49 +78,46 @@ export default function ViewOrders() {
         return (
           <div
             key={order._id}
-            style={{
-              border: "1px solid #ccc",
-              padding: "1rem",
-              margin: "1rem",
-              cursor: "pointer",
-            }}
+            className="vo-order-box"
             onClick={() => handleOrderClick(order._id)}
           >
-            <h2>
+            <h2 className="vo-order-id">
               <strong>Order ID:</strong> {order._id}
             </h2>
-            <p>
+            <p className="vo-final-total">
               <strong>Final Total:</strong> Rs. {finalTotal}
             </p>
-            <p>
-              <strong>Expected Delivery Date:</strong> {new Date(order.expectedDeliveryDate).toLocaleDateString()}
+            <p className="vo-delivery-date">
+              <strong>Expected Delivery Date:</strong>{" "}
+              {new Date(order.expectedDeliveryDate).toLocaleDateString()}
             </p>
 
             {isExpanded && (
-              <div>
-                <p>
+              <div className="vo-expanded-details">
+                <p className="vo-total-price">
                   <strong>Total Price:</strong> Rs. {order.totalPrice}
                 </p>
-                <p>
+                <p className="vo-shipping-cost">
                   <strong>Shipping Cost:</strong> Rs. {order.shippingCost}
                 </p>
-                <p>
+                <p className="vo-tax">
                   <strong>Tax:</strong> {order.tax * 100}%
                 </p>
-                <p>
+                <p className="vo-discount">
                   <strong>Discount:</strong> {order.discount * 100}%
                 </p>
-                <p>
+                <p className="vo-status">
                   <strong>Status:</strong> {order.status}
                 </p>
 
                 {order.laptops && order.laptops.length > 0 && (
-                  <div>
+                  <div className="vo-laptops">
                     <h3>Laptops:</h3>
-                    <ul>
+                    <ul className="vo-laptop-list">
                       {order.laptops.map((laptopItem) => (
-                        <li key={laptopItem.part}>
-                          {laptopItem.part} : Rs. {laptopItem.price} x {laptopItem.quantity}
+                        <li key={laptopItem.part._id} className="vo-laptop-item">
+                          {laptopItem.part.model} : Rs. {laptopItem.part.price} x{" "}
+                          {laptopItem.quantity}
                         </li>
                       ))}
                     </ul>
@@ -126,15 +125,16 @@ export default function ViewOrders() {
                 )}
 
                 {order.parts && Object.keys(order.parts).length > 0 && (
-                  <div>
+                  <div className="vo-parts">
                     <h3>Parts:</h3>
                     {Object.keys(order.parts).map((category) => (
                       <div key={category}>
                         <h4>{category}:</h4>
-                        <ul>
+                        <ul className="vo-part-list">
                           {order.parts[category].map((partItem) => (
-                            <li key={partItem.part._id}>
-                              {partItem.part} : Rs. {partItem.price} x {partItem.quantity}
+                            <li key={partItem.part._id} className="vo-part-item">
+                              {partItem.part.model} : Rs. {partItem.part.price} x{" "}
+                              {partItem.quantity}
                             </li>
                           ))}
                         </ul>

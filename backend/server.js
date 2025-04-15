@@ -264,21 +264,68 @@ mongoose
     });
 
     // 1. Get User's Cart
+    // app.get("/cart/:userId", async (req, res) => {
+    //   try {
+    //     const user = await User.findById(req.params.userId);
+    //     if (!user) {
+    //       return res.status(404).json({ message: "User not found" });
+    //     }
+
+    //     res.status(200).json({
+    //       cart: user.cart,
+    //     });
+    //   } catch (error) {
+    //     console.error(error);
+    //     res.status(500).json({ message: "Failed to fetch cart" });
+    //   }
+    // });
+
     app.get("/cart/:userId", async (req, res) => {
       try {
         const user = await User.findById(req.params.userId);
         if (!user) {
           return res.status(404).json({ message: "User not found" });
         }
-
-        res.status(200).json({
-          cart: user.cart,
-        });
+    
+        const cart = JSON.parse(JSON.stringify(user.cart)); // deep clone to avoid mutation
+    
+        // Helper to fetch full part details
+        const fetchPartDetails = async (id) => {
+          let part = await ComputerPart.findById(id);
+          if (!part) {
+            part = await Laptop.findById(id);
+          }
+          return part;
+        };
+    
+        // Populate laptop part details
+        if (cart.laptops && cart.laptops.length > 0) {
+          for (let item of cart.laptops) {
+            const partDetail = await fetchPartDetails(item.part);
+            item.part = partDetail;
+          }
+        }
+    
+        // Populate each part category inside "parts"
+        for (const category of Object.keys(cart.parts)) {
+          const partsArray = cart.parts[category];
+          for (let i = 0; i < partsArray.length; i++) {
+            const partId = partsArray[i].part || partsArray[i]; // Support both object or raw ID
+            const partDetail = await fetchPartDetails(partId);
+            partsArray[i] = {
+              ...partsArray[i],
+              part: partDetail
+            };
+          }
+        }
+    
+        res.status(200).json({ cart });
       } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Failed to fetch cart" });
       }
     });
+    
 
     // 2. Update Quantity in Cart (increase/decrease)
     app.post("/cart/update", async (req, res) => {
@@ -417,6 +464,7 @@ mongoose
         res.status(500).json({ message: "Failed to proceed to checkout" });
       }
     });
+    
 
     app.post("/checkout/create/buildAPc", async (req, res) => {
       try {
@@ -506,37 +554,102 @@ mongoose
 
     app.get("/checkout/:checkoutId", async (req, res) => {
       try {
-        let checkout = await Checkout.findById(req.params.checkoutId);
-        res.json(checkout);
+        let checkout = await Checkout.findById(req.params.checkoutId).lean(); // lean for better performance
+    
+        const fetchPartDetails = async (id) => {
+          let part = await ComputerPart.findById(id);
+          if (!part) {
+            part = await Laptop.findById(id);
+          }
+          return part;
+        };
+    
+        // Populate laptop details
+        if (checkout.laptops && checkout.laptops.length > 0) {
+          for (let item of checkout.laptops) {
+            const partDetail = await fetchPartDetails(item.part);
+            item.part = partDetail;
+          }
+        }
+    
+        // Populate each part category inside "parts"
+        for (const category of Object.keys(checkout.parts)) {
+          const partsArray = checkout.parts[category];
+          for (let i = 0; i < partsArray.length; i++) {
+            const partId = partsArray[i].part || partsArray[i]; // handle both structure types
+            const partDetail = await fetchPartDetails(partId);
+            partsArray[i] = {
+              ...partsArray[i],
+              part: partDetail
+            };
+          }
+        }
+    
+        res.status(200).json(checkout);
       } catch (error) {
+        console.error(error);
         res.status(500).send("Error fetching checkout details");
       }
     });
-
+    
+    
     app.get("/viewOrders/:userId", async (req, res) => {
       const userId = req.params.userId;
-
+    
       try {
-        // Validate ObjectId format
         if (!mongoose.Types.ObjectId.isValid(userId)) {
           return res.status(400).json({ message: "Invalid user ID" });
         }
-
-        const orders = await Checkout.find({ user: userId })
-          .sort({ createdAt: -1 });
-
+    
+        const orders = await Checkout.find({ user: userId }).sort({ createdAt: -1 });
+    
         if (orders.length === 0) {
-          return res
-            .status(404)
-            .json({ message: "No orders found for this user." });
+          return res.status(404).json({ message: "No orders found for this user." });
         }
-
-        res.json(orders);
+    
+        // Fetch part details from ComputerPart or Laptop
+        const fetchPartDetails = async (id) => {
+          let part = await ComputerPart.findById(id);
+          if (!part) {
+            part = await Laptop.findById(id);
+          }
+          return part;
+        };
+    
+        // Populate laptop and part details with quantity preserved
+        for (let order of orders) {
+          if (order.laptops && order.laptops.length > 0) {
+            for (let i = 0; i < order.laptops.length; i++) {
+              const item = order.laptops[i];
+              const partDetail = await fetchPartDetails(item.part);
+              order.laptops[i] = {
+                part: partDetail,
+                quantity: item.quantity,
+              };
+            }
+          }
+    
+          for (const category of Object.keys(order.parts || {})) {
+            const partsArray = order.parts[category];
+            for (let i = 0; i < partsArray.length; i++) {
+              const partItem = partsArray[i];
+              const partId = partItem.part || partItem; // in case it's raw ID
+              const partDetail = await fetchPartDetails(partId);
+              partsArray[i] = {
+                part: partDetail,
+                quantity: partItem.quantity,
+              };
+            }
+          }
+        }
+    
+        res.status(200).json(orders);
       } catch (error) {
         console.error("Error fetching user orders:", error);
         res.status(500).json({ message: "Failed to retrieve user orders" });
       }
     });
+    
 
     app.listen(port, () => {
       console.log("Server Connected");

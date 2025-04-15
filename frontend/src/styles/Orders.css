@@ -1,0 +1,61 @@
+
+  .vo-title {
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .vo-order-box {
+    border: 1px solid #ccc;
+    padding: 16px;
+    margin-bottom: 16px;
+    cursor: pointer;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .vo-order-id {
+    font-size: 1.25rem;
+    color: #333;
+  }
+  
+  .vo-final-total {
+    font-size: 1.1rem;
+  }
+  
+  .vo-delivery-date {
+    font-size: 1rem;
+    color: #555;
+  }
+  
+  .vo-expanded-details {
+    margin-top: 16px;
+  }
+  
+  .vo-total-price,
+  .vo-shipping-cost,
+  .vo-tax,
+  .vo-discount,
+  .vo-status {
+    font-size: 1rem;
+    margin: 8px 0;
+  }
+  
+  .vo-laptops,
+  .vo-parts {
+    margin-top: 16px;
+  }
+  
+  .vo-laptop-list,
+  .vo-part-list {
+    list-style: none;
+    padding-left: 0;
+  }
+  
+  .vo-laptop-item,
+  .vo-part-item {
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+  

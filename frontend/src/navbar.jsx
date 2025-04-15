@@ -29,7 +29,7 @@ export default function Navbar() {
                 <div>Contact Us</div>
                 
                 <div style={{ fontSize: '1.7rem', position: 'relative' }}>
-                    <Link to={'/cart'}><MdOutlineShoppingCart /></Link>
+                    <Link to={'/cart'} className="link"><MdOutlineShoppingCart /></Link>
                     <div className="cart-number">0</div>
                 </div>
                 <div style={{ position: 'relative',display: userData ? 'none' : '' }} onMouseEnter={() => setCheck1(true)} onMouseLeave={() => setCheck1(false)}>My Account
@@ -42,9 +42,9 @@ export default function Navbar() {
                     <div  className="circle" >
                         <img src={userData.profilePicture} style={{ height: '100%', width: '100%', objectFit: 'cover' }} />
                     </div>
-                    <div className="logout" >
-                        <div style={{ opacity: check2 ? '1' : '0' }} color="black"><Link to={`/viewOrders`}>View orders</Link></div>
-                        <div style={{ opacity: check2 ? '1' : '0' }} color="black" onClick={logout}>Logout</div>
+                    <div className="logouts" style={{ opacity: check2 ? '1' : '0' }}>
+                        <div  color="black"><Link to={`/viewOrders`} className="link">View orders</Link></div>
+                        <div color="black" onClick={logout}>Logout</div>
                     </div>
                 </div>
             </div>
