@@ -208,10 +208,7 @@ export default function CartList() {
               <strong>Rs. {totalAmt}</strong>
             </div>
             <button className="checkout-btn" onClick={handleProceedToCheckout}>
-              Proceed to Checkout
-            </button>
-            <button className="checkout-btn">
-              <Link to={'/esewa'}>Esewa</Link>
+              Pay With Khalti
             </button>
           </div>
         </div>
