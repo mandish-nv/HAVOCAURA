@@ -30,7 +30,6 @@ export default function Navbar() {
                 
                 <div style={{ fontSize: '1.7rem', position: 'relative' }}>
                     <Link to={'/cart'} className="link"><MdOutlineShoppingCart /></Link>
-                    <div className="cart-number">0</div>
                 </div>
                 <div style={{ position: 'relative',display: userData ? 'none' : '' }} onMouseEnter={() => setCheck1(true)} onMouseLeave={() => setCheck1(false)}>My Account
                     <div className="hover-div" style={{ opacity: check1 ? '1' : '0' }} color="black">

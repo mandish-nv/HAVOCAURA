@@ -6,8 +6,8 @@ import Navbar from "./navbar";
 
 export default function BuildAPc() {
   const userSession = sessionStorage.getItem("user");
-  const user = JSON.parse(userSession); // Parse session data
-  const userId = user._id; // Get user ID
+  const user = JSON.parse(userSession);
+  const userId = user._id;
 
   const [formData, setFormData] = useState({
     "CPU": "",
@@ -34,7 +34,6 @@ export default function BuildAPc() {
     "Case",
   ];
 
-  // Fetch parts by category from the API
   const fetchPartsByCategory = async (category) => {
     try {
       const response = await axios.get(`http://localhost:5000/retrieveByCategory/${category}`);
@@ -50,40 +49,67 @@ export default function BuildAPc() {
     categories.forEach((cat) => fetchPartsByCategory(cat));
   }, []);
 
-
   const handleSelect = (category, partId) => {
-    setFormData((prev) => {
-      if (category === "Other") {
-        const updatedOther = prev.Other.includes(partId)
-          ? prev.Other.filter((id) => id !== partId)
-          : [...prev.Other, partId];
-        return { ...prev, Other: updatedOther };
-      }
-      return {
-        ...prev,
-        [category]: partId,
-      };
-    });
+    setFormData((prev) => ({
+      ...prev,
+      [category]: partId,
+    }));
   };
 
-  
-  const navigate = useNavigate();
+  const calculateTotalPrice = () => {
+    let total = 0;
+    for (const category of categories) {
+      const selectedPartId = formData[category];
+      const selectedPart = parts[category]?.find((part) => part._id === selectedPartId);
+      if (selectedPart) {
+        total += selectedPart.price;
+      }
+    }
+    return total;
+  };
 
+  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const total = calculateTotalPrice();
+    const purchaseOrderId = `${userId}-${Date.now()}`;
+
+    const order = {
+      return_url: `http://localhost:5173`,
+      website_url: "http://localhost:5173",
+      amount: total * 100, // Khalti expects paisa (not rupees)
+      purchase_order_name: "Computer Parts Order",
+      purchase_order_id: purchaseOrderId,
+    };
+
     try {
-      const response = await axios.post("http://localhost:5000/checkout/create/buildAPc", {
-        userId, formData
+      const responses = await axios.post("http://localhost:5000/checkout/create/buildAPc", {
+        userId,
+        formData,
       });
-      alert(response.data.message);
-      const checkOutId = response.data.checkoutId;
-      navigate(`/checkout/${checkOutId}`); // Redirect to checkout page
+
+      const response = await fetch("https://dev.khalti.com/api/v2/epayment/initiate/", {
+        method: "POST",
+        headers: {
+          Authorization: "Key c9e386b2fcb94bdfa335cb95a8ffadc7",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(order),
+      });
+
+      const data = await response.json();
+      if (data.payment_url) {
+        window.location.href = data.payment_url;
+      } else {
+        console.error(data);
+        alert("Failed to initiate Khalti payment");
+      }
     } catch (error) {
       console.error(error);
-      alert("Failed to proceed to checkout");
+      alert("Something went wrong");
     }
   };
-
 
   const getSelectedPartImage = (category) => {
     const selectedPartId = formData[category];
@@ -103,17 +129,10 @@ export default function BuildAPc() {
               <h3 className="category-title">
                 {cat}:{" "}
                 <span className={formData[cat] ? "selected-text" : "not-selected"}>
-                  {cat === "Other"
-                    ? formData.Other.length > 0
-                      ? `${formData.Other.length} item(s) selected`
-                      : "Not selected"
-                    : formData[cat]
-                    ? "Item selected"
-                    : "Not selected"}
+                  {formData[cat] ? "Item selected" : "Not selected"}
                 </span>
               </h3>
 
-              
               <div className="dropdown-container">
                 <select
                   value={formData[cat] || ""}
@@ -128,7 +147,6 @@ export default function BuildAPc() {
                   ))}
                 </select>
 
-                
                 <div className="selected-part-image">
                   {formData[cat] && (
                     <img
@@ -141,7 +159,10 @@ export default function BuildAPc() {
               </div>
             </div>
           ))}
-          <button type="submit" className="checkout-button">
+
+          <h2 className="total-price">Total Price: Rs.{calculateTotalPrice()}</h2>
+
+          <button type="submit" className="checkout-button" onClick={handleSubmit}>
             Proceed to Checkout
           </button>
         </form>
