@@ -70,7 +70,7 @@ export default function DisplayPart() {
           </div>
     
           <div className="laptop-details-right">
-            <h2 className="laptop-details-title">{part.brand} {part.model}</h2>
+            <h2 className="laptop-details-title">{part.brand} - {part.model}</h2>
     
             <p className="laptop-details-price">Rs. {part.price}</p>
     
