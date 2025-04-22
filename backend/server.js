@@ -263,22 +263,7 @@ mongoose
       }
     });
 
-    // 1. Get User's Cart
-    // app.get("/cart/:userId", async (req, res) => {
-    //   try {
-    //     const user = await User.findById(req.params.userId);
-    //     if (!user) {
-    //       return res.status(404).json({ message: "User not found" });
-    //     }
-
-    //     res.status(200).json({
-    //       cart: user.cart,
-    //     });
-    //   } catch (error) {
-    //     console.error(error);
-    //     res.status(500).json({ message: "Failed to fetch cart" });
-    //   }
-    // });
+    
 
     app.get("/cart/:userId", async (req, res) => {
       try {
@@ -287,7 +272,7 @@ mongoose
           return res.status(404).json({ message: "User not found" });
         }
     
-        const cart = JSON.parse(JSON.stringify(user.cart)); // deep clone to avoid mutation
+        const cart = JSON.parse(JSON.stringify(user.cart));
     
         // Helper to fetch full part details
         const fetchPartDetails = async (id) => {

@@ -111,7 +111,7 @@ export default function CartList() {
       const response = await fetch("https://dev.khalti.com/api/v2/epayment/initiate/", {
         method: "POST",
         headers: {
-          Authorization: "Key 3ff9d57a2a5340c7a1401fe71f2f57f8",
+          Authorization: "Key c9e386b2fcb94bdfa335cb95a8ffadc7",
           "Content-Type": "application/json",
         },
         body: JSON.stringify(order),

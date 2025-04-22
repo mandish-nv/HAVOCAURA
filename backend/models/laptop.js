@@ -16,15 +16,15 @@ const laptopSchema = new mongoose.Schema({
     required: true,
   },
   ram: {
-    type: String, // e.g., "16GB DDR4"
+    type: String, 
     required: true,
   },
   storage: {
-    type: String, // e.g., "512GB SSD"
+    type: String, 
     required: true,
   },
   graphicsCard: {
-    type: String, // e.g., "NVIDIA RTX 3060"
+    type: String, 
     default: "Integrated",
   },
   screenSize: {

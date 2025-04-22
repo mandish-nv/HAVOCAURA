@@ -21,8 +21,8 @@ const computerPartSchema = new mongoose.Schema(
         "Case",
         "Peripherals",
         "Other",
-        "HDD",  //temp
-        "SSD"  //temp
+        "HDD", 
+        "SSD" 
       ],
     },
     brand: {
@@ -37,14 +37,14 @@ const computerPartSchema = new mongoose.Schema(
       min: 0,
     },
     specifications: {
-      type: String, // This allows flexibility for different types of parts
+      type: String, 
     },
     description: {
       type: String,
       trim: true,
     },
     image: {
-      type: String, // Store image URL or file path
+      type: String, 
       default: "",
     }
   },
