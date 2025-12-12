@@ -21,4 +21,15 @@ The primary goal is to create a reliable, accessible online source for computer 
 
 * Secure Online Payment Environment
 
-This platform aims to be the go-to solution for individuals looking to purchase individual components, laptops, or to build complete custom computer systems.
+This platform aims to be the go-to solution for individuals looking to purchase individual components, laptops, or to build complete custom computer systems
+
+## Tools and Software used
+*	Platform: Windows
+*	Designing Tool: Figma
+*	Front end: React
+*	Back end: Express js
+*	Database: MongoDB
+*	IDE: VS Code
+*	API Development: Postman
+*	Hosting: Vite, MongoDB Atlas
+
