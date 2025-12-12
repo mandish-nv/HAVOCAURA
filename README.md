@@ -19,6 +19,6 @@ The primary goal is to create a reliable, accessible online source for computer 
 
 * Detailed Invoice Generation
 
-Secure Online Payment Environment
+* Secure Online Payment Environment
 
 This platform aims to be the go-to solution for individuals looking to purchase individual components, laptops, or to build complete custom computer systems.
